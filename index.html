@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бастауыш мектеп математика сабағындағы белсенді оқыту әдістері</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#667085;
+      --blue:#2563eb;
+      --blueSoft:#eaf2ff;
+      --border:#e4e7ec;
+      --green:#16a34a;
+      --greenSoft:#eafaf0;
+      --red:#dc2626;
+      --redSoft:#fff1f1;
+      --shadow:0 8px 24px rgba(15,23,42,.08);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    header{
+      padding:28px 16px;
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      color:#fff;
+      text-align:center;
+    }
+
+    header h1{
+      margin:0 0 8px;
+      font-size:23px;
+      line-height:1.3;
+    }
+
+    header p{
+      margin:0;
+      opacity:.95;
+      font-size:15px;
+    }
+
+    main{
+      max-width:980px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    .section{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin:16px 0;
+      box-shadow:var(--shadow);
+    }
+
+    .tag{
+      display:inline-block;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--blueSoft);
+      color:#1d4ed8;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:21px;
+      color:#1d4ed8;
+    }
+
+    .intro{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .question{
+      margin-top:14px;
+      padding:15px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:#fbfdff;
+    }
+
+    .question h3{
+      margin:0 0 12px;
+      font-size:17px;
+      line-height:1.4;
+    }
+
+    .options{
+      display:grid;
+      gap:8px;
+    }
+
+    .option{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+      font-size:15px;
+    }
+
+    .option:hover{
+      border-color:#93c5fd;
+      background:#f0f6ff;
+    }
+
+    .option input{
+      margin-top:4px;
+      flex:0 0 auto;
+    }
+
+    .option.correct{
+      border-color:rgba(22,163,74,.55);
+      background:var(--greenSoft);
+    }
+
+    .option.wrong{
+      border-color:rgba(220,38,38,.45);
+      background:var(--redSoft);
+    }
+
+    .explanation{
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      border-left:4px solid var(--blue);
+      border-radius:10px;
+      background:var(--blueSoft);
+      font-size:14px;
+    }
+
+    .explanation b{color:#1d4ed8}
+
+    .result{
+      display:none;
+      margin-top:15px;
+      padding:13px;
+      border:1px solid #bfdbfe;
+      border-radius:14px;
+      background:var(--blueSoft);
+      color:#1e3a8a;
+      font-weight:700;
+    }
+
+    button{
+      width:100%;
+      margin-top:16px;
+      padding:13px 16px;
+      border:0;
+      border-radius:14px;
+      background:var(--blue);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    button:hover{background:#1d4ed8}
+
+    footer{
+      text-align:center;
+      padding:24px 16px;
+      color:var(--muted);
+      font-size:14px;
+    }
+  </style>
+
+  <script>
+    function selectedValues(question){
+      return Array.from(question.querySelectorAll('input:checked')).map(i => i.value).sort();
+    }
+
+    function correctValues(question){
+      return question.dataset.answer.split(',').map(v => v.trim()).sort();
+    }
+
+    function sameArray(a,b){
+      return a.length === b.length && a.every((v,i) => v === b[i]);
+    }
+
+    function checkSection(sectionId,resultId){
+      const section = document.getElementById(sectionId);
+      const questions = section.querySelectorAll('.question');
+      let score = 0;
+
+      questions.forEach(question => {
+        const selected = selectedValues(question);
+        const correct = correctValues(question);
+
+        if(sameArray(selected, correct)){
+          score++;
+        }
+
+        question.querySelectorAll('.option').forEach(option => {
+          const input = option.querySelector('input');
+          option.classList.remove('correct','wrong');
+
+          if(correct.includes(input.value)){
+            option.classList.add('correct');
+          }
+
+          if(input.checked && !correct.includes(input.value)){
+            option.classList.add('wrong');
+          }
+        });
+
+        question.querySelector('.explanation').style.display = 'block';
+      });
+
+      const result = document.getElementById(resultId);
+      result.style.display = 'block';
+      result.textContent = 'Нәтиже: ' + score + ' / ' + questions.length + ' дұрыс';
+    }
+  </script>
+</head>
+
+<body>
+<header>
+  <h1>Бастауыш мектеп математика сабағындағы белсенді оқыту әдістері</h1>
+  <p>Кушнир М.П., Мендыгалиева З.М., Петрик Е.П. әдістемелік ұсынымдары бойынша тесттер</p>
+</header>
+
+<main>
+
+<section class="section" id="section-1">
+  <span class="tag">1-бөлім</span>
+  <h2>Түсіндірме жазба</h2>
+  <p class="intro">
+    Бұл бөлімде бастауыш білім берудегі белсенді оқыту әдістерінің мәні, оқушының оқу үдерісіне белсенді қатысуы, зерттеушілік әрекет, коммуникация, топтық және жеке жұмыс, мұғалімнің серіктес әрі кеңесші рөлі қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>1. Жаңартылған білім беру жағдайында бастауыш білім берудің мақсаты қандай дағдыларды қалыптастырумен байланысты?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) білімді функционалды және шығармашылық қолдану</label>
+      <label class="option"><input type="checkbox" value="B"> B) тек дайын жауапты көшіру</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқу әрекетін мұғалімнің түсіндіруімен ғана шектеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) сыни ойлау</label>
+      <label class="option"><input type="checkbox" value="E"> E) тапсырманы дәлелдеусіз орындау</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушының өзара байланысын тоқтату</label>
+      <label class="option"><input type="checkbox" value="G"> G) зерттеу жұмысын сабақтан толық бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) зерттеу жұмыстарын жүргізу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бастауыш білім берудің мақсаты білімді функционалды және шығармашылық қолдану, сыни ойлау, зерттеу жұмыстарын жүргізу, ақпараттық-коммуникациялық технологияларды қолдану, коммуникация және топта/жеке жұмыс істеу дағдыларымен байланысты.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,G">
+    <h3>2. Белсенді оқыту әдістерінің негізгі сипаттары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушының оқу үдерісінен шет қалуы</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылардың оқу үдерісіне жоғары деңгейде қатысуы</label>
+      <label class="option"><input type="checkbox" value="C"> C) танымдық әрекетті төмендету</label>
+      <label class="option"><input type="checkbox" value="D"> D) шығармашылық әрекетті шектеу</label>
+      <label class="option"><input type="checkbox" value="E"> E) танымдық әрекетті белсендіру</label>
+      <label class="option"><input type="checkbox" value="F"> F) тапсырманы тек тыңдау арқылы орындау</label>
+      <label class="option"><input type="checkbox" value="G"> G) шығармашылық әрекетті белсендіру</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушыны дайын қорытындымен ғана таныстыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Белсенді оқыту әдістері оқушылардың оқу үдерісіне жоғары деңгейде қатысуымен, танымдық және шығармашылық әрекетті белсендіруімен сипатталады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>3. Белсенді оқыту әдістерінің айырмашылық белгілері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушы белсенділігінің қысқа ғана уақытқа созылуы</label>
+      <label class="option"><input type="checkbox" value="B"> B) шешімді тек мұғалімнің айтуы</label>
+      <label class="option"><input type="checkbox" value="C"> C) ойлауды мақсатты түрде белсендіру</label>
+      <label class="option"><input type="checkbox" value="D"> D) кері байланысты қолданбау</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушы пікірін талқылаудан шығару</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқу үдерісіне тұрақты және ұзақ қатысу</label>
+      <label class="option"><input type="checkbox" value="G"> G) тапсырманы механикалық қайталау</label>
+      <label class="option"><input type="checkbox" value="H"> H) тікелей және кері байланыс арқылы өзара әрекеттесу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Белсенді әдістердің белгілері ретінде ойлауды мақсатты белсендіру, оқушының ұзақ әрі тұрақты қатысуы, шешімді шығармашылықпен табуы және интерактивті өзара әрекет көрсетіледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>4. Белсенді оқыту әдістерін қолдану оқушыда қандай нәтижелердің қалыптасуына ықпал етеді?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) пәндік білімді меңгеру</label>
+      <label class="option"><input type="checkbox" value="B"> B) әлеуметтік дағдыларды қолданбау</label>
+      <label class="option"><input type="checkbox" value="C"> C) коммуникативтік дағдыларды шектеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) жеке қасиеттердің дамуын елемеу</label>
+      <label class="option"><input type="checkbox" value="E"> E) әлеуметтік және коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушыны тек тыңдаушы рөлінде қалдыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) зерттеу әрекетін сабақтан бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) шешім қабылдауды мұғалімге ғана беру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Белсенді танымдық әрекет пәндік біліммен қатар әлеуметтік, коммуникативтік дағдылардың және жеке қасиеттердің қалыптасуына ықпал етеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>5. Белсенді оқыту әдістерінің тиімділігі қандай шарттарға байланысты?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) әдістерді сабақ мақсатына байланыстырмай қолдануға</label>
+      <label class="option"><input type="checkbox" value="B"> B) мұғалімнің белсенді әдістерді қолдануға дайындығына</label>
+      <label class="option"><input type="checkbox" value="C"> C) бір ғана әдісті үнемі қайталауға</label>
+      <label class="option"><input type="checkbox" value="D"> D) белсенді әдістердің артықшылықтарын білуіне</label>
+      <label class="option"><input type="checkbox" value="E"> E) қорытынды шығаруды өткізіп жіберуге</label>
+      <label class="option"><input type="checkbox" value="F"> F) бағалау жүйесін түсініксіз қалдыруға</label>
+      <label class="option"><input type="checkbox" value="G"> G) әдісті тек ойын қызығушылығы үшін таңдауға</label>
+      <label class="option"><input type="checkbox" value="H"> H) әдістерді мақсат, мазмұн, мүмкіндік және уақытқа сай қолдануға</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Тиімділік мұғалімнің дайындығына, белсенді әдістердің артықшылықтарын білуіне, әдістерді әртүрлі қолдануына және оларды мақсатқа, мазмұнға, оқушы мүмкіндігіне, жағдай мен уақытқа сай таңдауына байланысты.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,G">
+    <h3>6. Әдістемелік ұсынымдардың мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) математика сабағында тек дәстүрлі түсіндіруді қолдану</label>
+      <label class="option"><input type="checkbox" value="B"> B) мұғалімді бір ғана әдіспен шектеу</label>
+      <label class="option"><input type="checkbox" value="C"> C) бастауыш сынып мұғаліміне белсенді әдістерді таңдауға көмек көрсету</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушының топтық әрекетін болдырмау</label>
+      <label class="option"><input type="checkbox" value="E"> E) сабақтағы зерттеушілік әрекетті алып тастау</label>
+      <label class="option"><input type="checkbox" value="F"> F) әдістерді пән мазмұнынан бөлек қарастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) математика сабағында белсенді әдістерді қолдануға көмек көрсету</label>
+      <label class="option"><input type="checkbox" value="H"> H) бағалауды оқушы әрекетінен ажырату</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдістемелік ұсынымдардың мақсаты — бастауыш сынып мұғалімдеріне математика сабағында белсенді оқыту әдістерін таңдауға және қолдануға әдістемелік көмек көрсету.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,F,H">
+    <h3>7. Белсенді және интерактивті әдістер арасындағы байланыс қалай түсіндіріледі?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) олардың арасында нақты шекара жоқ</label>
+      <label class="option"><input type="checkbox" value="B"> B) белсенді әдіс тек мұғалімнің сөйлеуіне негізделеді</label>
+      <label class="option"><input type="checkbox" value="C"> C) интерактивті әдіс оқушыны әрекеттен шеттетеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) екі әдіс бір-бірімен байланыспайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) белсенді әдіс оқушы араласуын қажет етпейді</label>
+      <label class="option"><input type="checkbox" value="F"> F) олардың өзара байланысы айқын</label>
+      <label class="option"><input type="checkbox" value="G"> G) интерактивті әдіс тек жеке жұмыспен шектеледі</label>
+      <label class="option"><input type="checkbox" value="H"> H) бір әдісті белсенді де, интерактивті де деп қарастыруға болады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Белсенді және интерактивті әдістер арасында нақты шекара жоқ, олардың байланысы айқын, бір әдіс екі тұрғыдан да қарастырылуы мүмкін.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E">
+    <h3>8. Әдістемелік ұсынымдардың құрылымы қандай өзара әрекет түрлеріне сәйкес құрылған?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тек мұғалімнің жеке түсіндіруіне</label>
+      <label class="option"><input type="checkbox" value="B"> B) жұптағы өзара әрекетке</label>
+      <label class="option"><input type="checkbox" value="C"> C) тек бақылау жұмысына</label>
+      <label class="option"><input type="checkbox" value="D"> D) тек үй тапсырмасына</label>
+      <label class="option"><input type="checkbox" value="E"> E) топтағы және ұжымдық өзара әрекетке</label>
+      <label class="option"><input type="checkbox" value="F"> F) тек мұғалімнің нұсқаулығына</label>
+      <label class="option"><input type="checkbox" value="G"> G) пәннен тыс іс-шараға</label>
+      <label class="option"><input type="checkbox" value="H"> H) тек жеке жазба жұмысына</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Ұсынымдар адамдардың өзара әрекет құрылымына сәйкес жасалған: жұптағы жұмыс, топтағы жұмыс және ұжымдық өзара әрекет.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-1"></div>
+  <button onclick="checkSection('section-1','result-section-1')">Нәтижені көрсету</button>
+</section>
+
+<section class="section" id="section-2">
+  <span class="tag">2-бөлім</span>
+  <h2>Математика сабағында ұжымдық жұмысқа арналған белсенді оқыту әдістері</h2>
+  <p class="intro">
+    Бұл бөлімде ұжымдық жұмыста қолданылатын «Әліпби», «Топтастыру», «Бинго»,
+    «Орын ауыстырайық», «Ақиқат па, жалған ба?», «Басымдық пирамидасы»,
+    «Бұл ненің белгісі?», «Логикалық тізбек», «Домино» әдістері қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D">
+    <h3>9. «Әліпби» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқылған ұғымдарды жүйелеу</label>
+      <label class="option"><input type="checkbox" value="B"> B) есепті дайын жауаппен аяқтау</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушыны тек тыңдаушы етіп қалдыру</label>
+      <label class="option"><input type="checkbox" value="D"> D) ойлау мен сөйлеуді дамыту</label>
+      <label class="option"><input type="checkbox" value="E"> E) ұғымдарды байланыссыз жаздыру</label>
+      <label class="option"><input type="checkbox" value="F"> F) талдауды сабақтан алып тастау</label>
+      <label class="option"><input type="checkbox" value="G"> G) рефлексияны қолданбау</label>
+      <label class="option"><input type="checkbox" value="H"> H) тек жеке бақылау жұмысын ұйымдастыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Әліпби» әдісінің мақсаты — оқылған ұғымдарды жүйелеу, оқушының ойлауын және сөйлеуін дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>10. «Әліпби» әдісінде оқушылар қандай әрекеттер орындайды?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) дайын тізімді үнсіз көшіреді</label>
+      <label class="option"><input type="checkbox" value="B"> B) технологиялық картаға ұғымдарды кезекпен жазады</label>
+      <label class="option"><input type="checkbox" value="C"> C) әріптерді математикалық ұғыммен байланыстырмайды</label>
+      <label class="option"><input type="checkbox" value="D"> D) жазған ұғымдарын сыныпқа айтпайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) әр оқушы бір немесе бірнеше ұғым жаза алады</label>
+      <label class="option"><input type="checkbox" value="F"> F) талдау кезеңін өткізбей аяқтайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) картаға тек мұғалімнің сөзін жазады</label>
+      <label class="option"><input type="checkbox" value="H"> H) ұғымды дауыстап атап, бәріне естіртеді</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар технологиялық картаға ұғымдарды кезекпен жазады, бір немесе бірнеше ұғым ұсына алады және жазған ұғымын дауыстап атайды.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>11. «Әліпби» әдісінің аналитикалық кезеңінде не орындалады?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) барлық ұғымдар талдаусыз өшіріледі</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар тек әріптерді қайталайды</label>
+      <label class="option"><input type="checkbox" value="C"> C) жазылған ұғымдардың ішінен негізгі ұғымдар таңдалады</label>
+      <label class="option"><input type="checkbox" value="D"> D) ұғымдар тақырыппен байланыстырылмайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылардың қатысуы тоқтатылады</label>
+      <label class="option"><input type="checkbox" value="F"> F) ұғымның мәнін көбірек ашатын сөздер бөлінеді</label>
+      <label class="option"><input type="checkbox" value="G"> G) карта кездейсоқ толтырылады</label>
+      <label class="option"><input type="checkbox" value="H"> H) рефлексиясыз баға қойылады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Екінші, аналитикалық кезеңде оқушылар картадағы ұғымдардың ішінен зерттелетін ұғымның мәнін көбірек ашатын бірнеше ұғымды бөліп көрсетеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,G">
+    <h3>12. «Топтастыру» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар арасында фактілік ақпаратты беру</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкаларды мағынасыз тарату</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушыны өз карточкасын оқудан шектеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) байланыстарды іздеуге тыйым салу</label>
+      <label class="option"><input type="checkbox" value="E"> E) топ құруды кездейсоқ жүргізу</label>
+      <label class="option"><input type="checkbox" value="F"> F) қорытындыны ұсынбай аяқтау</label>
+      <label class="option"><input type="checkbox" value="G"> G) тұжырымдар мен фактілер арасындағы байланысты іздеуге ынталандыру</label>
+      <label class="option"><input type="checkbox" value="H"> H) өлшем бірліктерін жіктемей қалдыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Топтастыру» әдісі фактілік ақпаратты оқушылар арасында таратуға және тұжырымдар немесе фактілер арасындағы байланысты іздеуге бағытталған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>13. «Топтастыру» әдісінде оқушылардың әрекеті</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) барлық оқушы бірдей карточка алады</label>
+      <label class="option"><input type="checkbox" value="B"> B) әр оқушы жеке тұжырым, факт немесе термин жазылған карточка алады</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар карточканы оқымай топқа бөлінеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар өз тұжырымдарын басқалармен салыстырады</label>
+      <label class="option"><input type="checkbox" value="E"> E) байланыс тапса да топ құрмайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) топ атауын түсіндірусіз қалдырады</label>
+      <label class="option"><input type="checkbox" value="G"> G) негізгі қорытындыны жазбайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) байланысты тұжырымдар бойынша топ құрады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте әр оқушы жеке карточка алады, оны оқиды, басқалардың тұжырымдарымен салыстырады және байланыс тапқан жағдайда топ құрады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C">
+    <h3>14. «Топтастыру» әдісі бойынша «Шамалар және олардың өлшем бірліктері» тақырыбында мақсат қандай?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) үш таңбалы сандарды қосу</label>
+      <label class="option"><input type="checkbox" value="B"> B) бұрыш түрлерін атау</label>
+      <label class="option"><input type="checkbox" value="C"> C) шамалардың өлшем бірліктерін жіктеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) диаграмма құрастыру</label>
+      <label class="option"><input type="checkbox" value="E"> E) теңдеудің түбірін табу</label>
+      <label class="option"><input type="checkbox" value="F"> F) бөлшектерді салыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) геометриялық фигураны салу</label>
+      <label class="option"><input type="checkbox" value="H"> H) көбейту кестесін қайталау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Математика сабағындағы мысалда «Топтастыру» әдісінің мақсаты — шамалардың өлшем бірліктерін жіктеу.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>15. «Топтастыру» әдісінде шамалар бойынша қандай топтар құрылуы тиіс?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) масса бірліктері</label>
+      <label class="option"><input type="checkbox" value="B"> B) теңдеу түрлері</label>
+      <label class="option"><input type="checkbox" value="C"> C) бұрыш түрлері</label>
+      <label class="option"><input type="checkbox" value="D"> D) уақыт бірліктері</label>
+      <label class="option"><input type="checkbox" value="E"> E) сан разрядтары</label>
+      <label class="option"><input type="checkbox" value="F"> F) график түрлері</label>
+      <label class="option"><input type="checkbox" value="G"> G) өрнек түрлері</label>
+      <label class="option"><input type="checkbox" value="H"> H) ұзындық бірліктері</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда мақсат орындалды деп санау үшін төрт топ құрылуы керек: масса бірліктері, уақыт бірліктері, ұзындық бірліктері, аудан бірліктері.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E">
+    <h3>16. «Бинго» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) есепті үнсіз көшіру</label>
+      <label class="option"><input type="checkbox" value="B"> B) ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылардың қозғалысын шектеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) тақырыпты талқыламау</label>
+      <label class="option"><input type="checkbox" value="E"> E) коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточкадағы тапсырманы тақырыптан бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушы пікірін тыңдамау</label>
+      <label class="option"><input type="checkbox" value="H"> H) қорытындыны кездейсоқ шығару</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Бинго» әдісінің мақсаты — ақпарат жинау, белгілі бір тақырыпқа кіріспе жасау және коммуникативтік дағдыларды дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>17. «Бинго» әдісінде оқушылар қандай әрекеттер орындайды?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) карточканы бос күйінде қайтарады</label>
+      <label class="option"><input type="checkbox" value="B"> B) тек мұғалімнен жауап күтеді</label>
+      <label class="option"><input type="checkbox" value="C"> C) квадраттарға бөлінген Бинго карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="D"> D) басқа оқушылармен сөйлеспейді</label>
+      <label class="option"><input type="checkbox" value="E"> E) тақырып бойынша сұрақ қоймайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) анықтамаға сәйкес келетін адамды табады</label>
+      <label class="option"><input type="checkbox" value="G"> G) жиналған деректі талқыламайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) қосымша сұрақ қойып, карточкаға жаза алады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушы Бинго карточкасын алады, анықтамаға сәйкес келетін адамды табады, қосымша сұрақ қойып, алынған ақпаратты карточкаға жаза алады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="D">
+    <h3>18. «Бинго» әдісінің «Уақыт» тақырыбындағы мысалында оқушылар не істейді?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тек сағаттың тілін сызады</label>
+      <label class="option"><input type="checkbox" value="B"> B) аудан бірліктерін топтайды</label>
+      <label class="option"><input type="checkbox" value="C"> C) көбейту кестесін ауызша айтады</label>
+      <label class="option"><input type="checkbox" value="D"> D) туған күні жыл мезгілдері мен айдың бөліктеріне сәйкес келетін оқушыларды табады</label>
+      <label class="option"><input type="checkbox" value="E"> E) фигураларды түсіне қарай бөледі</label>
+      <label class="option"><input type="checkbox" value="F"> F) диаграмма бағандарын бояйды</label>
+      <label class="option"><input type="checkbox" value="G"> G) бөлшектерді ортақ бөлімге келтіреді</label>
+      <label class="option"><input type="checkbox" value="H"> H) өрнектерді сандық және әріптік деп ажыратады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Уақыт» тақырыбында оқушылар туған күні жазда, күзде, қыста, көктемде, айдың бірінші жартысында немесе 20-нан кейін болатын сыныптастарын табады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,G">
+    <h3>19. «Орын ауыстырайық» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) фактілік ақпаратты оқушылар арасында жеткізу</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкадағы жауапты қолданбау</label>
+      <label class="option"><input type="checkbox" value="C"> C) қозғалысты сабақтан алып тастау</label>
+      <label class="option"><input type="checkbox" value="D"> D) математикалық диктантты қолданбау</label>
+      <label class="option"><input type="checkbox" value="E"> E) дұрыс-бұрыс жауапты ажыратпау</label>
+      <label class="option"><input type="checkbox" value="F"> F) материалды бекітпеу</label>
+      <label class="option"><input type="checkbox" value="G"> G) материалды қайталау және бекіту</label>
+      <label class="option"><input type="checkbox" value="H"> H) сұрақты тақырыппен байланыстырмау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Орын ауыстырайық» әдісінің мақсаты — фактілік ақпаратты жеткізу, фактілер арасындағы байланысты іздеуге ынталандыру, материалды қайталау және бекіту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>20. «Орын ауыстырайық» әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар жауапсыз карточка алады</label>
+      <label class="option"><input type="checkbox" value="B"> B) мұғалім тақырып бойынша сұрақтар дайындайды</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар карточкасыз әрекет етеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) мұғалім сұрақ оқымайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="F"> F) жауапқа сәйкес орын ауыстыру болмайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) әдіс тек жазбаша бақылаумен аяқталады</label>
+      <label class="option"><input type="checkbox" value="H"> H) жауапқа сәйкес оқушылар орын ауыстырады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мұғалім сұрақтар дайындайды, оқушылар «иә» немесе «жоқ» карточкасын алады. Сұраққа жауап «иә» болса, «иә» карточкасы барлар, «жоқ» болса, «жоқ» карточкасы барлар орын ауыстырады.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-2"></div>
+  <button onclick="checkSection('section-2','result-section-2')">Нәтижені көрсету</button>
+</section>
+  <section class="section" id="section-3">
+  <span class="tag">3-бөлім</span>
+  <h2>Ұжымдық жұмыс әдістері: пікір, басымдық, белгі, тізбек, ойын арқылы қайталау</h2>
+  <p class="intro">
+    Бұл бөлімде ұжымдық жұмысқа арналған «Ақиқат па, жалған ба?», «Басымдық пирамидасы»,
+    «Бұл ненің белгісі?», «Логикалық тізбек», «Домино», «Жеке лото»,
+    «Математикалық эстафета», «Сыртқы және ішкі шеңбер», «Құрастырма» және
+    «Даналық ағашы» әдістері қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>21. «Ақиқат па, жалған ба?» әдісінің мақсатына сәйкес келетін тұжырымдар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) бар білім негізінде пікірлерді талдау</label>
+      <label class="option"><input type="checkbox" value="B"> B) өлшем бірліктерін топтастыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) флипчарттағы жауаптарды айналдырып толықтыру</label>
+      <label class="option"><input type="checkbox" value="D"> D) білімді жүйелеу</label>
+      <label class="option"><input type="checkbox" value="E"> E) геометриялық фигураны тірек сөздермен сипаттау</label>
+      <label class="option"><input type="checkbox" value="F"> F) екі шеңбер арқылы сұрақ-жауап ұйымдастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) құрастырма бөліктері арқылы топқа біріктіру</label>
+      <label class="option"><input type="checkbox" value="H"> H) формативті бағалау жүргізу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдістің мақсаты — оқушылардың бар біліміне сүйеніп пікірлерді талдау, білімді жүйелеу және формативті бағалау жүргізу.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>22. «Ақиқат па, жалған ба?» әдісінде орындалатын әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар флипчарттарды сағат тілімен ауыстырады</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушыларға ақиқат және жалған пікірлер беріледі</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтар геометриялық фигуралар бойынша бөлінеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар есептің алгоритмін пирамидаға орналастырады</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар пікірдің ақиқат немесе жалған екенін анықтайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) әр оқушы карточкадағы өлшем бірлігін жіктейді</label>
+      <label class="option"><input type="checkbox" value="G"> G) топтар постердегі сөздерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) пікірлерді «ақиқат» және «жалған» топтарына орналастырады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушыларға ақиқат және жалған пікірлер ұсынылады. Олар пікірдің дұрыстығын анықтап, карточкаларды «ақиқат» және «жалған» топтарына бөледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>23. «Ақиқат па, жалған ба?» әдісінің математика сабағындағы мысалы қай тақырыппен байланысты?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) шамалар және уақыт бірліктері</label>
+      <label class="option"><input type="checkbox" value="B"> B) екі таңбалы сандардың разрядтық құрамы</label>
+      <label class="option"><input type="checkbox" value="C"> C) сандық және әріптік өрнектер</label>
+      <label class="option"><input type="checkbox" value="D"> D) тікбұрышты үшбұрышты сипаттау</label>
+      <label class="option"><input type="checkbox" value="E"> E) көбейту қасиеттерін коллажбен көрсету</label>
+      <label class="option"><input type="checkbox" value="F"> F) өрнектерді салыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) пиктограмма бойынша диаграмма құрастыру</label>
+      <label class="option"><input type="checkbox" value="H"> H) теңдеу құрастыру және шешу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мәтіндегі мысалда бұл әдіс «Сандық және әріптік өрнектер. Өрнектерді салыстыру» тақырыбында қолданылады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,G">
+    <h3>24. «Басымдық пирамидасы» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) ақпараттың маңыздылығын талдау</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушыларды туған күн айлары бойынша табу</label>
+      <label class="option"><input type="checkbox" value="C"> C) пікірлерді «иә» және «жоқ» карточкасымен белгілеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) бірдей өлшем бірліктерін топқа бөлу</label>
+      <label class="option"><input type="checkbox" value="E"> E) плакаттағы сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) екі шеңбер арқылы көбейту кестесін сұрау</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқиғалар ретін қалпына келтіру</label>
+      <label class="option"><input type="checkbox" value="H"> H) құрастырма бөліктері арқылы диаграмма құрастыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Басымдық пирамидасы» әдісі ақпараттың маңыздылығын талдауға немесе оқиғалар ретін қалпына келтіруге бағытталған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>25. «Басымдық пирамидасы» әдісінде оқушылар қандай жұмыс орындайды?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тек «иә» немесе «жоқ» карточкасын көтереді</label>
+      <label class="option"><input type="checkbox" value="B"> B) сөздер, фразалар немесе суреттер жазылған карточкалармен жұмыс істейді</label>
+      <label class="option"><input type="checkbox" value="C"> C) флипчартты басқа топқа беріп отырады</label>
+      <label class="option"><input type="checkbox" value="D"> D) ең маңызды тармақтарды пирамиданың жоғарғы бөлігіне орналастырады</label>
+      <label class="option"><input type="checkbox" value="E"> E) өлшем бірліктерін масса, уақыт, ұзындық деп жіктейді</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточканың сол және оң бөлігін сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="G"> G) белгі бойынша тиісті санның жанына барып тұрады</label>
+      <label class="option"><input type="checkbox" value="H"> H) өз шешімін түсіндіріп, пікірін қорғайды</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушылар карточкалармен жұмыс істеп, маңызды тармақтарды жоғарыға, маңызы төмендерін төменге орналастырады және өз шешімін түсіндіреді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>26. Мәтінде есеп шығаруға арналған мүмкін алгоритмге кіретін әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) жауапты есеп шартын оқымай жазу</label>
+      <label class="option"><input type="checkbox" value="B"> B) барлық белгілі сандарды түсіндірмей қосу</label>
+      <label class="option"><input type="checkbox" value="C"> C) есепті оқу</label>
+      <label class="option"><input type="checkbox" value="D"> D) сұрақты қысқаша жазбаға қоспау</label>
+      <label class="option"><input type="checkbox" value="E"> E) орындалған амалдан кейін түсіндірме бермеу</label>
+      <label class="option"><input type="checkbox" value="F"> F) негізгі сөздерді табу</label>
+      <label class="option"><input type="checkbox" value="G"> G) жауапты ұзақ сөйлеммен түсініксіз жазу</label>
+      <label class="option"><input type="checkbox" value="H"> H) есептің жауабын қысқа жазу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Есеп шығару алгоритмінде есепті оқу, негізгі сөздерді табу, қысқаша жазба жасау, сұрақты қайталау, амал таңдау, әр амалдан кейін түсіндірме жазу және қысқа жауап беру көрсетіледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>27. «Бұл ненің белгісі?» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) құбылыстарды немесе заттарды маңызды белгілерімен сәйкестендіру</label>
+      <label class="option"><input type="checkbox" value="B"> B) сұрақтарды қиындық деңгейі бойынша ағашқа ілу</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтардың флипчарттарын ауыстыру</label>
+      <label class="option"><input type="checkbox" value="D"> D) бөлшек өрнектерін есте сақтап жазу</label>
+      <label class="option"><input type="checkbox" value="E"> E) түсініктер мен ұғымдарды нақтылау</label>
+      <label class="option"><input type="checkbox" value="F"> F) сандық және әріптік өрнектерді ақиқат-жалғанға бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) екі шеңберде сұрақ қою</label>
+      <label class="option"><input type="checkbox" value="H"> H) суреттер арқылы коллаж жасау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Бұл ненің белгісі?» әдісі құбылыстарды немесе заттарды олардың маңызды белгілерімен сәйкестендіруге, түсініктер мен ұғымдарды нақтылауға бағытталған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,G">
+    <h3>28. «Бұл ненің белгісі?» әдісінің «100 көлеміндегі сандар» мысалында қолданылған белгілер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) параллель және қиылысатын түзулер</label>
+      <label class="option"><input type="checkbox" value="B"> B) жұп сан, 4 ондық және 8 бірліктен тұрады</label>
+      <label class="option"><input type="checkbox" value="C"> C) ең үлкен үш таңбалы сан</label>
+      <label class="option"><input type="checkbox" value="D"> D) 74 пен 76 арасында орналасқан тақ сан</label>
+      <label class="option"><input type="checkbox" value="E"> E) 7-ге көбейту кестесінің мәні</label>
+      <label class="option"><input type="checkbox" value="F"> F) периметрі 24 см болатын тік төртбұрыш</label>
+      <label class="option"><input type="checkbox" value="G"> G) 2 ондықтан тұратын дөңгелек сан</label>
+      <label class="option"><input type="checkbox" value="H"> H) пиктограммадағы қант мөлшері</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда оқушылар екі таңбалы сандарды белгілері арқылы анықтайды: 48 — жұп, 4 ондық және 8 бірлік; 75 — 74 пен 76 арасындағы тақ сан; 20 — 2 ондықтан тұратын дөңгелек сан.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>29. «Логикалық тізбек» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) валюта туралы мәтін бойынша сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="B"> B) математикалық өрнектерді флипчартта айналдыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) логикалық ойлауды дамыту</label>
+      <label class="option"><input type="checkbox" value="D"> D) түстер бойынша топқа бөлу</label>
+      <label class="option"><input type="checkbox" value="E"> E) фигураның қабырғалары мен бұрыштарын тірек сөздермен сипаттау</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқылған материалды жүйелеу</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкадағы жауапты сол жақ бөлікпен сәйкестендіру</label>
+      <label class="option"><input type="checkbox" value="H"> H) туған күн туралы ақпарат жинау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Логикалық тізбек» әдісінің мақсаты — логикалық ойлау мен сөйлеуді дамыту және оқылған материалды жүйелеу.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>30. «Логикалық тізбек» әдісінде оқушылар орындайтын әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тізбек бөліктері жазылған карточкаларды таңдайды</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкаларды «ақиқат» және «жалған» деп бөледі</label>
+      <label class="option"><input type="checkbox" value="C"> C) сұрақ жазылған жапырақты ағаштан алады</label>
+      <label class="option"><input type="checkbox" value="D"> D) өзара сөйлесіп, логикалық тізбек құрады</label>
+      <label class="option"><input type="checkbox" value="E"> E) флипчарттағы жауапқа белгі қояды</label>
+      <label class="option"><input type="checkbox" value="F"> F) автобустық аялдамада теңдеу құрастырады</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкаға сәйкес жауапты жабады</label>
+      <label class="option"><input type="checkbox" value="H"> H) тізбектің логикасын түсіндіреді</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар тізбек бөліктері жазылған карточкаларды таңдап, бір-бірімен әрекеттесу арқылы логикалық тізбек құрады және тізбектің орналасу логикасын түсіндіреді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E">
+    <h3>31. «Домино» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) күрделі мәселенің мазмұнын талдау</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқылған материалды қайталау</label>
+      <label class="option"><input type="checkbox" value="C"> C) туған күн айларын анықтау</label>
+      <label class="option"><input type="checkbox" value="D"> D) пікірлерді басымдық пирамидасына орналастыру</label>
+      <label class="option"><input type="checkbox" value="E"> E) есептеу дағдыларын дамыту</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтар арасында флипчарт ауыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) сұрақтарды кубик қырларымен бастау</label>
+      <label class="option"><input type="checkbox" value="H"> H) постердегі сөздерді есте сақтау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Домино» әдісінің мақсаты — оқылған материалды қайталау және есептеу дағдыларын дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>32. «Домино» әдісіндегі карточка құрылымы мен әрекет тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) карточка тек бір бос ұяшықтан тұрады</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкада тек топ атауы жазылады</label>
+      <label class="option"><input type="checkbox" value="C"> C) карточканың оң жағына өрнек, сұрақ немесе ұғым жазылады</label>
+      <label class="option"><input type="checkbox" value="D"> D) карточканың екі жағы да бос қалдырылады</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушы карточканы оқымай келесіге береді</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточканың сол жағына жауап немесе анықтама жазылады</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкалар флипчартқа түстер бойынша жапсырылады</label>
+      <label class="option"><input type="checkbox" value="H"> H) ойын соңғы карточка бірінші карточкадағы жауаппен тұйықталғанда аяқталады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Домино» карточкасының оң жағында тапсырма, сұрақ немесе ұғым, сол жағында жауап немесе анықтама беріледі. Ойын соңғы карточка бірінші карточкадағы жауаппен байланысқанда аяқталады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D">
+    <h3>33. «Математикалық эстафета» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) табличалық қосу, азайту, көбейту, бөлу жағдайларын тексеру</label>
+      <label class="option"><input type="checkbox" value="B"> B) валюта туралы мәтін бойынша сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) фигураны тірек сөздермен сипаттау</label>
+      <label class="option"><input type="checkbox" value="D"> D) формулаларды қолдану және қарапайым есептерді шығару білігін тексеру</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушыларды мақал бөліктері арқылы топқа бөлу</label>
+      <label class="option"><input type="checkbox" value="F"> F) постердегі сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="G"> G) пиктограмма бойынша диаграмма салу</label>
+      <label class="option"><input type="checkbox" value="H"> H) туған күн туралы ақпарат жинау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдістің мақсаты — қосу, азайту, көбейту, бөлу кестелік жағдайларын, формула қолдану білігін, қарапайым есептерді шығару дағдысын тексеру және формативті бағалау.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>34. «Сыртқы және ішкі шеңбер» әдісінің орындалу тәртібіне тән әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар тек бір флипчартқа жауап жазады</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар ішкі және сыртқы шеңбер құрады</label>
+      <label class="option"><input type="checkbox" value="C"> C) барлық оқушы бірдей карточканы алады</label>
+      <label class="option"><input type="checkbox" value="D"> D) топтар автобустық аялдамаға бөлінеді</label>
+      <label class="option"><input type="checkbox" value="E"> E) жұптар бір-біріне карточкадағы сұрақты қояды</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар пікірлерді «ақиқат» және «жалған» деп бөледі</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар коллаж арқылы көбейту қасиетін көрсетеді</label>
+      <label class="option"><input type="checkbox" value="H"> H) сыртқы шеңбер оқушылары келесі жұпқа қарай жылжиды</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар ішкі және сыртқы шеңбер құрып, жұпта сұрақ қояды. Мұғалім белгі берген сайын сыртқы шеңбер бір орынға жылжып, әрекет қайталанады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,G">
+    <h3>35. «Даналық ағашы» әдісінің ұйымдастырылуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) топтар флипчартты сағат тілімен ауыстырады</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар карточканың екі бөлігін домино ретінде сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="C"> C) мұғалім сұрақтарды «жапырақтарға» жазып, «ағашқа» бекітеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар шеңберде сұрақтарын ауыстырады</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар туған күн айларын жинайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтар постердегі сөздерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) сұрақтар күрделілік деңгейіне қарай түстермен бөлінеді</label>
+      <label class="option"><input type="checkbox" value="H"> H) топтар теңдеулерді автобус аялдамасында құрастырады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Даналық ағашы» әдісінде мұғалім сұрақтарды «жапырақтарға» жазып, ағашқа бекітеді. Сұрақтар күрделілік деңгейіне қарай түстермен бөлінеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>36. «Даналық ағашы» әдісіндегі сұрақ түстерінің деңгейлері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) сары — білу, түсіну және қолдану деңгейі</label>
+      <label class="option"><input type="checkbox" value="B"> B) сары — тек бағалау деңгейі</label>
+      <label class="option"><input type="checkbox" value="C"> C) жасыл — тек есте сақтау деңгейі</label>
+      <label class="option"><input type="checkbox" value="D"> D) жасыл — талдау және синтез деңгейі</label>
+      <label class="option"><input type="checkbox" value="E"> E) қызыл — тек қолдану деңгейі</label>
+      <label class="option"><input type="checkbox" value="F"> F) көк — салыстыру және өлшеу деңгейі</label>
+      <label class="option"><input type="checkbox" value="G"> G) ақ — есептеу және көшіру деңгейі</label>
+      <label class="option"><input type="checkbox" value="H"> H) қызыл — бағалау деңгейі</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Сары сұрақтар — білу, түсіну және қолдану; жасыл сұрақтар — талдау және синтез; қызыл сұрақтар — бағалау деңгейі.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-3"></div>
+  <button onclick="checkSection('section-3','result-section-3')">Нәтижені көрсету</button>
+</section>
+
+<section class="section" id="section-4">
+  <span class="tag">4-бөлім</span>
+  <h2>Топтық жұмыс: топқа бөлу тәсілдері және «Айналмалы жұмыс», «Көрінетін-көрінбейтін», «Автобус аялдамасы» әдістері</h2>
+  <p class="intro">
+    Бұл бөлімде топтық жұмысты ұйымдастырудағы топқа бөлу тәсілдері және топтық белсенді әдістердің орындалу тәртібі қарастырылады.
+  </p>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>37. Топқа бөлудің мәтінде көрсетілген тәсілдері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тек бақылау жұмысының нәтижесімен бөлу</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылардың өз қалауы бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="C"> C) тек үй тапсырмасының көлемімен бөлу</label>
+      <label class="option"><input type="checkbox" value="D"> D) тек тақтаға шығу ретімен бөлу</label>
+      <label class="option"><input type="checkbox" value="E"> E) отырған орны бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="F"> F) тек дәптер түсі бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) тек сабақ соңындағы баға бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) мұғалімнің шешімі бойынша бөлу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Топқа бөлудің бірнеше тәсілі берілген: оқушылардың өз қалауы бойынша, отырған орны бойынша, мұғалімнің шешімі бойынша, тізім бойынша, белгі бойынша, жеребе бойынша және т.б.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,G">
+    <h3>38. «Жеребе бойынша» топқа бөлуге сәйкес келетін құралдар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) түрлі түсті қағаздар</label>
+      <label class="option"><input type="checkbox" value="B"> B) дайын есептердің жауап парағы</label>
+      <label class="option"><input type="checkbox" value="C"> C) тек журналдағы баға</label>
+      <label class="option"><input type="checkbox" value="D"> D) геометриялық фигуралар</label>
+      <label class="option"><input type="checkbox" value="E"> E) мұғалімнің ауызша қорытындысы</label>
+      <label class="option"><input type="checkbox" value="F"> F) тек сабақтың тақырыбы жазылған парақ</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар алдын ала салған заттар</label>
+      <label class="option"><input type="checkbox" value="H"> H) тек бірдей түсті карточкалар</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Жеребе арқылы бөлу кезінде себетте түрлі түсті қағаздар, алдын ала салынған заттар, геометриялық фигуралар және басқа да пәндік терминдер болуы мүмкін.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>39. Математика сабағына тікелей сәйкес келетін топқа бөлу материалы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) жануарлар суреттері</label>
+      <label class="option"><input type="checkbox" value="B"> B) өсімдіктер атаулары</label>
+      <label class="option"><input type="checkbox" value="C"> C) квадраттар</label>
+      <label class="option"><input type="checkbox" value="D"> D) елдер мен қалалар атаулары</label>
+      <label class="option"><input type="checkbox" value="E"> E) мақал бөліктері</label>
+      <label class="option"><input type="checkbox" value="F"> F) үшбұрыштар</label>
+      <label class="option"><input type="checkbox" value="G"> G) цитата бөліктері</label>
+      <label class="option"><input type="checkbox" value="H"> H) жұмбақ жауаптары</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Математика сабағына өзекті мысал ретінде геометриялық фигуралар арқылы бөлу берілген: квадраттар, үшбұрыштар, шеңберлер және т.б.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E,H">
+    <h3>40. «Айналмалы жұмыс» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) құрылымдалған ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточканың оң және сол бөлігін сәйкестендіру</label>
+      <label class="option"><input type="checkbox" value="C"> C) сұрақтарды ағаш жапырақтарына ілу</label>
+      <label class="option"><input type="checkbox" value="D"> D) екі шеңбер арқылы сұрақ қою</label>
+      <label class="option"><input type="checkbox" value="E"> E) белгілі тақырып бойынша қысқа идеялар мен жауаптар тізімін құрастыру</label>
+      <label class="option"><input type="checkbox" value="F"> F) сөздерді плакаттан есте сақтау</label>
+      <label class="option"><input type="checkbox" value="G"> G) топты мақал бөліктерімен жинау</label>
+      <label class="option"><input type="checkbox" value="H"> H) берілген тақырып бойынша ойлануға жетелеу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Айналмалы жұмыс» әдісінің мақсаты — құрылымдалған ақпарат жинау немесе белгілі тақырып бойынша оқушылардың қысқа идеялар мен жауаптар тізімін құрастыруына мүмкіндік беру.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,G">
+    <h3>41. «Айналмалы жұмыс» әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) әр оқушы жеке «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="B"> B) мұғалім 5–6 оқушыдан тұратын шағын топтар құрады</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар карточкаларды «ақиқат» және «жалған» деп бөледі</label>
+      <label class="option"><input type="checkbox" value="D"> D) әр топқа сұрақ жазылған флипчарт беріледі</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар геометриялық фигуралар белгісіне қарай орын ауыстырады</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтар постердегі сөздерді 40 секунд есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) топтар уақыт біткен соң парақтарымен алмасады</label>
+      <label class="option"><input type="checkbox" value="H"> H) әр оқушы ағаштан сұрақ жапырағын жұлып алады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте мұғалім шағын топтар құрады, әр топқа сұрақ жазылған флипчарт береді. Уақыт өткен соң топтар парақтарымен алмасып, алдыңғы жауаптарды оқиды және өз ойларын толықтырады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>42. «Айналмалы жұмыс» әдісінде басқа топтың жауабымен танысқаннан кейін орындалатын әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) алдыңғы топтың жауабын түгел өшіреді</label>
+      <label class="option"><input type="checkbox" value="B"> B) парақты оқымай келесі топқа береді</label>
+      <label class="option"><input type="checkbox" value="C"> C) алдыңғы топтың жауабын оқиды</label>
+      <label class="option"><input type="checkbox" value="D"> D) өз пікірін жазбай тек белгілейді</label>
+      <label class="option"><input type="checkbox" value="E"> E) барлық топ бірдей жауапты қайталайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) келіссе, белгі қояды</label>
+      <label class="option"><input type="checkbox" value="G"> G) келіспесе де негіздеме жазбайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) келіспесе, өз көзқарасын негіздеп жазады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Топтар басқа топтың жауабын оқиды. Келіссе белгі қояды, келіспесе өз көзқарасын негіздеп жазады және өз ойларын қосады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D">
+    <h3>43. «Айналмалы жұмыс» әдісінің «Уақыт» тақырыбындағы флипчарт сұрақтары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) Уақыт не үшін керек?</label>
+      <label class="option"><input type="checkbox" value="B"> B) Үшбұрыштың периметрі қалай табылады?</label>
+      <label class="option"><input type="checkbox" value="C"> C) Квадраттың диагоналі деген не?</label>
+      <label class="option"><input type="checkbox" value="D"> D) «Уақытты бағалау керек» дегенді қалай түсінесің?</label>
+      <label class="option"><input type="checkbox" value="E"> E) 6-ға көбейту кестесін ата</label>
+      <label class="option"><input type="checkbox" value="F"> F) Қандай валюталарды білесің?</label>
+      <label class="option"><input type="checkbox" value="G"> G) Пиктограмма бойынша диаграмма құр</label>
+      <label class="option"><input type="checkbox" value="H"> H) Тікбұрышты үшбұрышты квадратпен салыстыр</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Уақыт» тақырыбындағы мысалда флипчарт сұрақтары уақыттың қажеттілігі, уақытты бағалау, нақты уақытты білу қажет болатын жағдайлар, мақалдың мағынасы және сағат түрлері туралы берілген.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>44. «Айналмалы жұмыс» әдісінің математика сабағындағы қолданылу мысалдары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) туған күн мезгілдері бойынша ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="B"> B) уақыт туралы түсініктерді жинақтау</label>
+      <label class="option"><input type="checkbox" value="C"> C) екі таңбалы сандарды белгі бойынша табу</label>
+      <label class="option"><input type="checkbox" value="D"> D) ақиқат және жалған өрнектерді бөлу</label>
+      <label class="option"><input type="checkbox" value="E"> E) параллель және қиылысатын түзулерге мысал келтіру</label>
+      <label class="option"><input type="checkbox" value="F"> F) есеп алгоритмін пирамидаға орналастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) домино карточкасын тұйықтау</label>
+      <label class="option"><input type="checkbox" value="H"> H) математикалық өрнектер арқылы есептеу дағдысын автоматтандыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мәтіндегі мысалдар уақыт туралы түсініктерді жинақтауға, параллель және қиылысатын түзулерге мысал келтіруге, математикалық өрнектер арқылы есептеу дағдысын автоматтандыруға арналған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>45. «Көрінетін-көрінбейтін» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) топтар арасында автобус аялдамалары бойынша ауысу</label>
+      <label class="option"><input type="checkbox" value="B"> B) кубик қыры арқылы сұрақ таңдау</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқылған материалды, ұғымдарды, формулаларды жүйелеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) мәтін бойынша сұрақтар құрастыру</label>
+      <label class="option"><input type="checkbox" value="E"> E) фигураны тірек сөздермен сипаттау</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқылған материалды пысықтау</label>
+      <label class="option"><input type="checkbox" value="G"> G) туған күн туралы дерек жинау</label>
+      <label class="option"><input type="checkbox" value="H"> H) логикалық тізбек құру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Көрінетін-көрінбейтін» әдісінің мақсаты — оқылған материалды, ұғымдарды және формулаларды пысықтау әрі жүйелеу.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E,G">
+    <h3>46. «Көрінетін-көрінбейтін» әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар 5–6 адамнан топтарға бірігеді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтар сұрақ жазылған аялдамаларға бөлінеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар екі шеңбер құрады</label>
+      <label class="option"><input type="checkbox" value="E"> E) плакаттағы 15–20 сөзді белгілі уақыт ішінде есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточканың оң жағындағы өрнекті сол жақ жауаппен сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="G"> G) топтар есте сақтаған сөздерін жазып, плакатпен салыстырады</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушылар сұрақ жапырақтарын ағаштан алады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар топқа бөлінеді, плакаттағы 15–20 сөзді қысқа уақытта есте сақтайды, кейін жазып, плакатпен салыстырады және түзетулер енгізеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>47. «Көрінетін-көрінбейтін» әдісінің бөлшектер тақырыбындағы қолданылуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) екі таңбалы сандарды ондық саны бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="B"> B) бөлімдері бірдей бөлшектерді қосу және азайту алгоритмдерін қолдану</label>
+      <label class="option"><input type="checkbox" value="C"> C) тікбұрышты үшбұрышты сипаттау</label>
+      <label class="option"><input type="checkbox" value="D"> D) бөлшек өрнектерін түрлі түспен және әртүрлі бағытта жазу</label>
+      <label class="option"><input type="checkbox" value="E"> E) туған күн маусымдары бойынша дерек жинау</label>
+      <label class="option"><input type="checkbox" value="F"> F) валюталар туралы мәтін бойынша сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) параллель түзулерге өмірден мысал жазу</label>
+      <label class="option"><input type="checkbox" value="H"> H) көрген өрнектерді есте сақтап, кейін мәндерін табу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдіс бөлімдері бірдей бөлшектерді қосу және азайту алгоритмдерін қолдану үшін беріледі: топтар өрнектер жазып, есте сақтайды, кейін мәндерін табады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>48. «Автобус аялдамасы» әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) сұрақтарды қиындық деңгейіне қарай түстермен бөлу</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкадағы өрнек пен жауапты домино түрінде жалғау</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқылатын материалды талдау</label>
+      <label class="option"><input type="checkbox" value="D"> D) фигураны коллажбен бейнелеу</label>
+      <label class="option"><input type="checkbox" value="E"> E) топ ішінде рөлдерді бөлу арқылы идея ұсыну</label>
+      <label class="option"><input type="checkbox" value="F"> F) материалды талқылау</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылардың туған күні туралы ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="H"> H) коммуникативтік дағдыларды дамыту</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> «Автобус аялдамасы» әдісінің мақсаты — оқылатын материалды талдау, талқылау және оқушылардың коммуникативтік дағдыларын дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,G">
+    <h3>49. «Автобус аялдамасы» әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) мұғалім жаңа тақырып бойынша 4–5 сұрақ анықтайды</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар плакаттағы сөздерді 40 секунд есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар сұрақты кубик қырына қарай таңдайды</label>
+      <label class="option"><input type="checkbox" value="D"> D) топтар сұрақтар санына қарай аялдамаларға бөлінеді</label>
+      <label class="option"><input type="checkbox" value="E"> E) әр оқушы жеке лото карточкасын жабады</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтар мақал бөліктерін біріктіреді</label>
+      <label class="option"><input type="checkbox" value="G"> G) топтар аялдамалар бойынша сағат тілімен ауысады</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушылар карточкаларды ақиқат және жалған деп бөледі</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мұғалім 4–5 сұрақ анықтайды, топтар сұрақтар санына қарай аялдамаларға бөлінеді. Әр аялдамада жауап жазып, кейін сағат тілімен келесі аялдамаға ауысады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E">
+    <h3>50. «Автобус аялдамасы» әдісінің теңдеулер тақырыбындағы мысалы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар уақыт туралы флипчарт сұрақтарына жауап береді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар қосу, азайту, көбейту, бөлу таңбаларын қолданып теңдеулер құрастырады</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар түстер арқылы «ақиқат» және «жалған» пікірлерді бөледі</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар бөлшек өрнектерін плакаттан есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) топтар басқа аялдамадағы теңдеулермен танысып, олардың мәнін табады</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар туған күні айдың қай бөлігінде екенін анықтайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар карточкадағы геометриялық фигураны сипаттайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушылар есеп алгоритмін пирамидаға орналастырады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Теңдеулер тақырыбында әр аялдамада оқушылар амал таңбаларын, бір және екі таңбалы сандарды қолданып теңдеулер құрастырады. Басқа топтар сол теңдеулермен танысып, мәнін табады.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-4"></div>
+  <button onclick="checkSection('section-4','result-section-4')">Нәтижені көрсету</button>
+</section>
+  <section class="section" id="section-5">
+  <span class="tag">5-бөлім</span>
+  <h2>Топтық жұмыс: Блум кубигі, идеялар құйғышы, коллаж, сұрақ-жауап, қабырға құрастыру</h2>
+  <p class="intro">
+    Бұл бөлімде топтық жұмыста қолданылатын Блум кубигі, идеялар құйғышы,
+    коллаж, сұрақ-жауап, қабырға құрастыру, артығын табу, ертегі құрастыру,
+    төрт бұрыш және ажурлы ара әдістері қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>51. Блум кубигі әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) білімді қайта жаңғырту</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкаларды домино түрінде жалғау</label>
+      <label class="option"><input type="checkbox" value="C"> C) туған күн туралы дерек жинау</label>
+      <label class="option"><input type="checkbox" value="D"> D) себеп-салдарлық байланыстарды анықтау</label>
+      <label class="option"><input type="checkbox" value="E"> E) плакаттағы сөздерді қысқа уақытта есте сақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтарды журнал тізімімен бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушыларды ішкі және сыртқы шеңберге бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) ойлау әрекетін белсендіру және формативті бағалау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Блум кубигі әдісінің мақсаты — білімді қайта жаңғырту, себеп-салдарлық байланыстарды анықтау, мәселенің әр қырын ашу, ойлау әрекетін белсендіру және формативті бағалау.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,G">
+    <h3>52. Бастауыш сыныпқа ұсынылатын Блум кубигіндегі тапсырма сөздері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) көшір</label>
+      <label class="option"><input type="checkbox" value="B"> B) сипатта</label>
+      <label class="option"><input type="checkbox" value="C"> C) жасырып қой</label>
+      <label class="option"><input type="checkbox" value="D"> D) үндемей күт</label>
+      <label class="option"><input type="checkbox" value="E"> E) салыстыр</label>
+      <label class="option"><input type="checkbox" value="F"> F) өшір</label>
+      <label class="option"><input type="checkbox" value="G"> G) қолдан</label>
+      <label class="option"><input type="checkbox" value="H"> H) аяқтамай қалдыр</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бастауыш сыныпқа арналған нұсқада «сипатта», «салыстыр», «ассоциация ұсын», «талда», «қолдан», «бағала» сияқты тапсырма сөздері беріледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>53. Блум кубигі әдісінің тікбұрышты үшбұрыш тақырыбындағы әрекеттері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) бөлшектерді бірдей бөлімге келтіру</label>
+      <label class="option"><input type="checkbox" value="B"> B) валюта түрлері бойынша мәтін құрастыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) тікбұрышты үшбұрышты геометриялық фигура ретінде сипаттау</label>
+      <label class="option"><input type="checkbox" value="D"> D) уақыт өлшемдері бойынша туған күндерді жинау</label>
+      <label class="option"><input type="checkbox" value="E"> E) теңдеулерді аялдамада шешу</label>
+      <label class="option"><input type="checkbox" value="F"> F) тікбұрышты үшбұрышты квадратпен салыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) екі таңбалы сандарды ондық саны бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) тікбұрышты үшбұрыштың ерекшеліктерін атау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда оқушылар тікбұрышты үшбұрышты сипаттайды, квадратпен салыстырады, қоршаған ортадағы ұқсас заттарды атайды, құрастыру жолын талдайды және ерекшеліктерін көрсетеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>54. Идеялар құйғышы әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) идеяларды айту, таңдау және салыстыру</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкадағы жауапты жасырып қою</label>
+      <label class="option"><input type="checkbox" value="C"> C) әріптер бойынша ұғымдар жазу</label>
+      <label class="option"><input type="checkbox" value="D"> D) сұрақтарды ағаш жапырағына ілу</label>
+      <label class="option"><input type="checkbox" value="E"> E) топ ішінде және сыныпта талқылау ұйымдастыру</label>
+      <label class="option"><input type="checkbox" value="F"> F) тек дайын жауапты таңдау</label>
+      <label class="option"><input type="checkbox" value="G"> G) санды белгі бойынша табу</label>
+      <label class="option"><input type="checkbox" value="H"> H) жұпта суретті көшіріп салу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Идеялар құйғышы әдісі оқушылардың идеяларын айтуына, оларды таңдауға, салыстыруға, қарама-қарсы қоюға және топ ішінде әрі бүкіл сыныпта талқылауға бағытталған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,G">
+    <h3>55. Идеялар құйғышы әдісінде топ ішінде орындалатын әрекеттер</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар тек бірдей жауапты көшіреді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар 4–6 адамнан топтарға бөлінеді</label>
+      <label class="option"><input type="checkbox" value="C"> C) әр оқушы жеке «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="D"> D) топ мүшелері хатшы, уақыт бақылаушы, ұйымдастырушы, жүргізуші сияқты рөлдерді бөледі</label>
+      <label class="option"><input type="checkbox" value="E"> E) карточкалар ақиқат және жалған деп бөлінеді</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар шеңбер бойынша сұрақ қояды</label>
+      <label class="option"><input type="checkbox" value="G"> G) берілген тақырып бойынша мүмкіндігінше көп идея жазылады</label>
+      <label class="option"><input type="checkbox" value="H"> H) мұғалім барлық жауапты өзі жазады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар 4–6 адамнан топтасады, рөлдер бөледі және берілген тақырып бойынша мүмкіндігінше көп идея мен пікірді қағаздың жоғарғы бөлігіне жазады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>56. Идеялар құйғышы әдісінің екі амалмен шығарылатын есептер мысалындағы жұмысы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар бұрыш туралы ертегі құрастырады</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар түстер бойынша тамақтану уақытын таңдайды</label>
+      <label class="option"><input type="checkbox" value="C"> C) қарапайым есептерден құрама есеп құрастырады</label>
+      <label class="option"><input type="checkbox" value="D"> D) теңдеулерді аялдамада құрастырады</label>
+      <label class="option"><input type="checkbox" value="E"> E) постердегі өрнектерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) сюжеті ұқсас есептерді шешіп, жаңа мәтіндер жасайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) санды геометриялық фигурамен сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="H"> H) карточкадағы терминге ассоциация айтады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда топтар сюжеті ұқсас қарапайым есептерді шешеді, олардан екі амалмен шығарылатын құрама есептер құрастырады және жұмыстарын таныстырады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>57. Коллаж әдісінің мақсаты мен ұйымдастырылуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) көзқарасты шығармашылық арқылы көрсету</label>
+      <label class="option"><input type="checkbox" value="B"> B) есептің жауабын ағаштан алу</label>
+      <label class="option"><input type="checkbox" value="C"> C) плакаттағы 15–20 сөзді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="D"> D) шағын топтарға флипчарт және материалдар беру</label>
+      <label class="option"><input type="checkbox" value="E"> E) екі шеңбер арқылы сұрақ қою</label>
+      <label class="option"><input type="checkbox" value="F"> F) туған күн туралы дерек жинау</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкадағы жауапты теңдеумен жабу</label>
+      <label class="option"><input type="checkbox" value="H"> H) жұмыс соңында топтың өз жұмысын түсіндіруі</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Коллаж әдісі көзқарасты шығармашылық арқылы көрсетуге бағытталған. Топтарға флипчарт пен материалдар беріледі, жұмыс соңында топ өз таңдауы мен жұмысын түсіндіреді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>58. Коллаж әдісінің көбейту қасиеттері тақырыбындағы мысалы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) уақыт өлшемдерін түс бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="B"> B) көбейтудің ауыстырымдылық қасиетін көрсету</label>
+      <label class="option"><input type="checkbox" value="C"> C) туған күн мезгілдерін жинау</label>
+      <label class="option"><input type="checkbox" value="D"> D) геометриялық фигураны белгілерімен табу</label>
+      <label class="option"><input type="checkbox" value="E"> E) көбейтудің терімділік қасиетін көрсету</label>
+      <label class="option"><input type="checkbox" value="F"> F) екі таңбалы сандарды салыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) валюта мәтіні бойынша сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="H"> H) көбейтудің үлестірімділік қасиетін көрсету</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда топтар көбейтудің қасиеттеріне коллаж жасайды: ауыстырымдылық, терімділік, үлестірімділік, 1-ге көбейту және 0-ге көбейту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>59. Сұрақ-жауап әдісінің мақсаты және орындалуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тек дайын тест жауаптарын жаттау</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушыларды геометриялық фигуралармен бөлу</label>
+      <label class="option"><input type="checkbox" value="C"> C) коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="D"> D) сұрақтарды ағаш жапырағына жазу</label>
+      <label class="option"><input type="checkbox" value="E"> E) постердегі сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) сұрақ құрастыру дағдысын дамыту</label>
+      <label class="option"><input type="checkbox" value="G"> G) пікірлерді «ақиқат» және «жалған» деп бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) топтардың сұрақ алмасып, жауап беруі</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Сұрақ-жауап әдісі коммуникативтік дағдыларды, сұрақ құрастыру білігін дамытады және оқылған материалды бекітеді. Топтар мәтін немесе мұғалім сөзі бойынша сұрақ құрастырып, кейін сұрақ алмасады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>60. Қабырға құрастыру әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) негізгі мәселе мазмұнын талдау</label>
+      <label class="option"><input type="checkbox" value="B"> B) туған күн уақытын жинау</label>
+      <label class="option"><input type="checkbox" value="C"> C) карточка бөліктері арқылы тізбек құру</label>
+      <label class="option"><input type="checkbox" value="D"> D) топты мақал арқылы бөлу</label>
+      <label class="option"><input type="checkbox" value="E"> E) негізгі терминге қатысты сөздер мен белгілерді жинақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушыларды сыртқы және ішкі шеңберге бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) өрнектерді есте сақтап жазу</label>
+      <label class="option"><input type="checkbox" value="H"> H) сұраққа тек «иә» немесе «жоқ» деп жауап беру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Қабырға құрастыру әдісі негізгі мәселе мазмұнын талдауға бағытталған. Оқушылар негізгі терминге қатысты сөздер, фразалар, суреттер арқылы өз «қабырғасын» құрастырады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,G">
+    <h3>61. Қабырға құрастыру әдісінің геометриялық фигуралар тақырыбындағы мысалы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар бөлшектерді қосу алгоритмін жазады</label>
+      <label class="option"><input type="checkbox" value="B"> B) топтарға тік төртбұрыш, үшбұрыш сияқты фигура атаулары беріледі</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар туған күн маусымдарын анықтайды</label>
+      <label class="option"><input type="checkbox" value="D"> D) фигуралар математикалық тілмен сипатталады</label>
+      <label class="option"><input type="checkbox" value="E"> E) топтар теңдеулерді аялдамаларда шешеді</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар кубик қырындағы сөзге жауап береді</label>
+      <label class="option"><input type="checkbox" value="G"> G) сипаттауда төбелер, бұрыштар, қабырғалар, қарама-қарсы қабырғалар қолданылады</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушылар карточкадағы санды жауаппен жабады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда топтарға геометриялық фигура атаулары беріледі. Оқушылар фигураны математикалық тілмен сипаттайды, төбелер, бұрыштар, қабырғалар, қарама-қарсы қабырғалар сияқты тірек сөздерді қолданады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>62. Артығын тап әдісінің мақсаты және әрекеті</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) есепті дайын алгоритм бойынша ғана көшіру</label>
+      <label class="option"><input type="checkbox" value="B"> B) сұрақтарды түстер бойынша ағашқа ілу</label>
+      <label class="option"><input type="checkbox" value="C"> C) заттардың ұқсастығы мен айырмашылығын зерттеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) топтар арасында флипчарт алмастыру</label>
+      <label class="option"><input type="checkbox" value="E"> E) карточкадағы жауапты жабу</label>
+      <label class="option"><input type="checkbox" value="F"> F) ұғымдарды категорияларға бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) ішкі және сыртқы шеңберде сұрақ қою</label>
+      <label class="option"><input type="checkbox" value="H"> H) тізімдегі бөгде элементті дәлелмен анықтау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Артығын тап әдісінде оқушылар ұғымдардың ұқсастығы мен айырмашылығын зерттеп, әр тізімдегі бөгде элементті тауып, өз таңдауын дәлелдейді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,G">
+    <h3>63. Артығын тап әдісінің математикалық тіл тақырыбындағы мысалдары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) бірінші көбейткіш, екінші көбейткіш, көбейтінді</label>
+      <label class="option"><input type="checkbox" value="B"> B) таңғы ас, түскі ас, бесін ас</label>
+      <label class="option"><input type="checkbox" value="C"> C) қызыл, жасыл, көк, қызғылт сары</label>
+      <label class="option"><input type="checkbox" value="D"> D) қосу, азайту, бөлу, көбейту</label>
+      <label class="option"><input type="checkbox" value="E"> E) жаз, күз, қыс, көктем</label>
+      <label class="option"><input type="checkbox" value="F"> F) футбол, волейбол, баскетбол</label>
+      <label class="option"><input type="checkbox" value="G"> G) шеңбер, радиус, диаметр, циркуль</label>
+      <label class="option"><input type="checkbox" value="H"> H) құстар, балықтар, сүтқоректілер</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Карточкаларда математикалық ұғымдар мен терминдер берілген: көбейту компоненттері, амал атаулары, геометриялық ұғымдар, өлшем бірліктері және т.б.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>64. Ертегі құрастыр әдісінің мақсаты мен орындалуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар тек дайын анықтаманы жаттайды</label>
+      <label class="option"><input type="checkbox" value="B"> B) коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтар флипчарттарды сағат тілімен ауыстырады</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар шеңберде есеп сұрайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) шығармашылық ойлауды дамыту</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточканың сол және оң бөлігін сәйкестендіру</label>
+      <label class="option"><input type="checkbox" value="G"> G) туған күн айлары бойынша ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="H"> H) ұғымдарды шығармашылық түрде қолдану</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Ертегі құрастыр әдісі коммуникативтік дағдыларды, шығармашылық ойлауды және ұғымдарды шығармашылық қолдануды дамытады. Оқушылар мәтінді оқып, оның мазмұнын ертегі арқылы көрсетеді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>65. Ертегі құрастыр әдісіндегі бұрыш тақырыбы бойынша мәтіндегі негізгі ұғымдар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) периметр және аудан</label>
+      <label class="option"><input type="checkbox" value="B"> B) масса және уақыт</label>
+      <label class="option"><input type="checkbox" value="C"> C) бұрыш екі сәуле мен төбеден тұрады</label>
+      <label class="option"><input type="checkbox" value="D"> D) цилиндрдің негізі шеңбер болады</label>
+      <label class="option"><input type="checkbox" value="E"> E) бөлінді және қалдық</label>
+      <label class="option"><input type="checkbox" value="F"> F) бұрыштың төбесі — екі сәуле басталатын нүкте</label>
+      <label class="option"><input type="checkbox" value="G"> G) диаграмма деректерді көрсетеді</label>
+      <label class="option"><input type="checkbox" value="H"> H) валюта елге байланысты өзгереді</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мәтінде бұрыш екі сәуле мен төбеден тұратын геометриялық фигура екені, бұрыштың төбесі екі сәуле басталатын нүкте екені, ал қабырғалары бұрышты құрайтын сәулелер екені беріледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>66. Төрт бұрыш әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="B"> B) есептің алгоритмін пирамидаға орналастыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) сұрақтарды жапырақтарға жазу</label>
+      <label class="option"><input type="checkbox" value="D"> D) сабақ тақырыбына кіріспе жасау</label>
+      <label class="option"><input type="checkbox" value="E"> E) карточкадағы жауапты жабу</label>
+      <label class="option"><input type="checkbox" value="F"> F) қабырғаға геометриялық фигура сипаттамасын құрастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="H"> H) ақпарат жинау және ауызша есептеу дағдыларын дамыту</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Төрт бұрыш әдісі коммуникативтік дағдыларды дамытуға, сабақ тақырыбына кіріспе жасауға, ақпарат жинауға және ауызша есептеу дағдыларын дамытуға бағытталған.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,G">
+    <h3>67. Төрт бұрыш әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар жұпта арқасын түйістіріп отырады</label>
+      <label class="option"><input type="checkbox" value="B"> B) мұғалім сыныптың төрт бұрышына түрлі түсті парақтар іледі</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар карточканың оң және сол бөлігін сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="D"> D) топтар постердегі сөздерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар таңдаған жауабына сәйкес бұрышқа барып тұрады</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар тақырып бойынша ертегі құрастырмайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар өз таңдауы бойынша пікір алмасып, дәлел келтіреді</label>
+      <label class="option"><input type="checkbox" value="H"> H) әр оқушы ағаштан сұрақ жапырағын алады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Төрт бұрыш әдісінде мұғалім төрт бұрышқа түрлі түсті парақтар іледі. Оқушылар өз жауабына сәйкес бұрышқа барып тұрып, пікір алмасады және таңдаған позициясын дәлелдейді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>68. Төрт бұрыш әдісінің математика сабағындағы қолданылу мысалдары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) есеп шығару алгоритмін басымдық пирамидасына салу</label>
+      <label class="option"><input type="checkbox" value="B"> B) карточкадағы өрнек пен жауапты домино түрінде жалғау</label>
+      <label class="option"><input type="checkbox" value="C"> C) өлшем бірліктерін тиісті шама түрлерімен сәйкестендіру</label>
+      <label class="option"><input type="checkbox" value="D"> D) туған күн туралы ақпарат жинау</label>
+      <label class="option"><input type="checkbox" value="E"> E) валюта туралы мәтін бойынша сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="F"> F) тамақтану қалауы бойынша дерек жинап, диаграмма құрастыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) бұрыш туралы ертегі құрастыру</label>
+      <label class="option"><input type="checkbox" value="H"> H) өрнектердің мәніне сәйкес бұрышқа бару</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Төрт бұрыш әдісі өлшем бірліктерін ажырату, тамақтану қалауы бойынша дерек жинап диаграмма құрастыру және өрнектердің мәнін тауып тиісті бұрышқа бару мысалдарымен берілген.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>69. Ажурлы ара әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) өздігінен оқу дағдыларын дамыту</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушыларды туған күн мезгілдерімен бөлу</label>
+      <label class="option"><input type="checkbox" value="C"> C) жауапты тек «иә» немесе «жоқ» деп шектеу</label>
+      <label class="option"><input type="checkbox" value="D"> D) плакаттағы сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="E"> E) коммуникативтік дағдыларды дамыту</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточкаларды домино ретінде жалғау</label>
+      <label class="option"><input type="checkbox" value="G"> G) сұрақтарды түстер бойынша ағашқа ілу</label>
+      <label class="option"><input type="checkbox" value="H"> H) флипчарттағы идеяларды бояу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Ажурлы ара әдісінің мақсаты — оқушылардың өздігінен оқу дағдыларын және коммуникативтік дағдыларын дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>70. Ажурлы ара әдісінің орындалу кезеңдері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар тек дайын жауапты көшіреді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар саны бірдей топтарға бөлінеді</label>
+      <label class="option"><input type="checkbox" value="C"> C) әр оқушы «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="D"> D) әр оқушы материалдың бір бөлігін меңгеріп, өз сұрағы бойынша сарапшы болады</label>
+      <label class="option"><input type="checkbox" value="E"> E) топтар флипчарттағы жауаптарды өшіреді</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар шеңбер бойынша орын ауыстырады</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар туған күн айлары туралы дерек жинайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) сарапшылар кейін өз тобына қайтып, материалын түсіндіреді</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушылар тең топтарға бөлінеді, материал бөліктерін меңгереді, сарапшы топтарда талқылайды, кейін өз бастапқы топтарына оралып, өз бөлігін басқаларға түсіндіреді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>71. Ажурлы ара әдісінің есептер тақырыбындағы мысалы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар бұрыш туралы ертегі құрастырады</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар өлшем бірліктерін бұрыштарға бөледі</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар шамалар арасындағы тәуелділікке арналған есептерді шешеді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар карточканың сол және оң бөлігін сәйкестендіреді</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар туған күндер бойынша ақпарат жинайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) әр оқушы өз есебін шығарып, шешу алгоритмін құрастырады</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар плакаттағы өрнектерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="H"> H) сарапшы топтарда әр есеп түрінің алгоритмі талқыланады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда оқушылар шамалар арасындағы тәуелділікке арналған есептерді шешеді: өнімділік–уақыт–жұмыс, өнімділік–аудан–өнім массасы, жылдамдық–уақыт–қашықтық, көлем және басқа есеп түрлері қарастырылады.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-5"></div>
+  <button onclick="checkSection('section-5','result-section-5')">Нәтижені көрсету</button>
+</section>
+
+<section class="section" id="section-6">
+  <span class="tag">6-бөлім</span>
+  <h2>Жұптық жұмыс: арқа тіреп отыру, өз ойыны, сөздік теннис, динамикалық жұптар</h2>
+  <p class="intro">
+    Бұл бөлімде жұптық жұмыста қолданылатын арқа тіреп отыру, өз ойыны,
+    сөздік теннис, динамикалық жұптар, өзара сұрау және «иә-жоқ» әдістері қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D">
+    <h3>72. Арқа тіреп отыру әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) тыңдау және сөйлеу арқылы математикалық ұғымдарды тереңдету</label>
+      <label class="option"><input type="checkbox" value="B"> B) топтарды түстер бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="C"> C) плакаттағы сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="D"> D) бірлескен әрекет арқылы түсіндіру және қабылдау дағдысын дамыту</label>
+      <label class="option"><input type="checkbox" value="E"> E) есептерді аялдамаларда шешу</label>
+      <label class="option"><input type="checkbox" value="F"> F) сұрақтарды ағашқа ілу</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкадағы жауапты жабу</label>
+      <label class="option"><input type="checkbox" value="H"> H) топта коллаж жасау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Арқа тіреп отыру әдісінің мақсаты — тыңдау және сөйлеу арқылы бірлескен әрекетте математикалық ұғымдарды тереңдету.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>73. Арқа тіреп отыру әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар төрт бұрышқа бөлінеді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар орындықтары тиетіндей етіп, арқаларын түйістіріп отырады</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтар флипчартпен алмасады</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар «иә» немесе «жоқ» карточкасын алады</label>
+      <label class="option"><input type="checkbox" value="E"> E) бірінші оқушы суретті немесе тапсырманы сипаттайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар барлық пікірді «ақиқат» және «жалған» деп бөледі</label>
+      <label class="option"><input type="checkbox" value="G"> G) сұрақтар түстер бойынша ағашқа ілінеді</label>
+      <label class="option"><input type="checkbox" value="H"> H) екінші оқушы сипаттамаға сүйеніп сурет салады немесе тапсырманы орындайды</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте оқушылар арқаларын түйістіріп отырады. Бір оқушы суретті немесе тапсырманы сипаттайды, екінші оқушы оны мүмкіндігінше дәл орындайды, кейін жұмыстар салыстырылады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>74. Арқа тіреп отыру әдісінің квадрат тақырыбындағы мысалында қолданылатын сипаттамалар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) бұл шеңбер, радиусы 2 см</label>
+      <label class="option"><input type="checkbox" value="B"> B) бұл цилиндр, негізі дөңгелек</label>
+      <label class="option"><input type="checkbox" value="C"> C) бұл геометриялық фигура</label>
+      <label class="option"><input type="checkbox" value="D"> D) оның үш бұрышы бар</label>
+      <label class="option"><input type="checkbox" value="E"> E) оның екі ғана қабырғасы тең</label>
+      <label class="option"><input type="checkbox" value="F"> F) бұл төртбұрыш</label>
+      <label class="option"><input type="checkbox" value="G"> G) оның бір жағы ғана 2 см</label>
+      <label class="option"><input type="checkbox" value="H"> H) барлық қабырғалары тең</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Квадрат мысалында оқушы оны геометриялық фигура, төртбұрыш, барлық қабырғалары тең, қабырғасы 2 см деп сипаттай алады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>75. Арқа тіреп отыру әдісінің параллель түзулер мысалындағы дұрыс сипаттамалар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) олар екі геометриялық фигура</label>
+      <label class="option"><input type="checkbox" value="B"> B) олардың ортақ нүктесі бар</label>
+      <label class="option"><input type="checkbox" value="C"> C) олар кесінділер ретінде ғана беріледі</label>
+      <label class="option"><input type="checkbox" value="D"> D) олар міндетті түрде қиылысады</label>
+      <label class="option"><input type="checkbox" value="E"> E) олардың ортақ нүктелері жоқ</label>
+      <label class="option"><input type="checkbox" value="F"> F) олардың бір ғана төбесі бар</label>
+      <label class="option"><input type="checkbox" value="G"> G) олар тек қисық сызықтар болады</label>
+      <label class="option"><input type="checkbox" value="H"> H) олар шеңбер бөліктері</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Параллель түзулер мысалында олар екі геометриялық фигура екені, басы мен соңы жоқ екені және ортақ нүктелері жоқ екені сипатталады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,G">
+    <h3>76. Өз ойыны әдісінің мақсаты мен негізгі шарты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушыларға дайын сұрақ пен дайын жауапты көшіру</label>
+      <label class="option"><input type="checkbox" value="B"> B) сұрақ құрастыру білігін дамыту</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушыларды төрт бұрышқа бөлу</label>
+      <label class="option"><input type="checkbox" value="D"> D) формативті бағалау жүргізу</label>
+      <label class="option"><input type="checkbox" value="E"> E) сөздерді плакаттан есте сақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) топтар арасында флипчарт ауыстыру</label>
+      <label class="option"><input type="checkbox" value="G"> G) берілген жауапқа сәйкес сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="H"> H) карточкаларды домино ретінде жалғау</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Өз ойыны әдісінің мақсаты — сұрақ құрастыру білігін дамыту және формативті бағалау. Әдісте жұптар дайын жауап алады да, сол жауапқа сәйкес сұрақ құрастырады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>77. Өз ойыны әдісіндегі «жауап — 5» мысалына сәйкес келетін сұрақтар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) 7 мен 4-тің қосындысы қанша?</label>
+      <label class="option"><input type="checkbox" value="B"> B) 12 мен 3-тің айырмасы қанша?</label>
+      <label class="option"><input type="checkbox" value="C"> C) 1 мен 4-тің қосындысы қанша?</label>
+      <label class="option"><input type="checkbox" value="D"> D) 6 мен 3-тің көбейтіндісі қанша?</label>
+      <label class="option"><input type="checkbox" value="E"> E) 21-ді 3-ке бөлгенде қанша болады?</label>
+      <label class="option"><input type="checkbox" value="F"> F) 8 бен 3-тің айырмасы қанша?</label>
+      <label class="option"><input type="checkbox" value="G"> G) 9 бен 4-тің қосындысы қанша?</label>
+      <label class="option"><input type="checkbox" value="H"> H) 20-ны 4-ке бөлгенде қанша болады?</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Жауап 5 болса, оған сәйкес сұрақтар ретінде 1+4, 8−3, 20:4, 5×1, 100−95, 10:2 сияқты мысалдар келтіріледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>78. Өз ойыны әдісінің есеп шығару мысалында оқушылар не құрастырады?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) берілген шарт пен жауапқа сәйкес сұрақ</label>
+      <label class="option"><input type="checkbox" value="B"> B) уақыт туралы дерек жинау парағын</label>
+      <label class="option"><input type="checkbox" value="C"> C) геометриялық фигура қабырғаларының қабырғасын</label>
+      <label class="option"><input type="checkbox" value="D"> D) берілген шешімге сәйкес есеп сұрағын</label>
+      <label class="option"><input type="checkbox" value="E"> E) карточканың сол және оң бөлігін</label>
+      <label class="option"><input type="checkbox" value="F"> F) флипчарттағы жауапқа белгі</label>
+      <label class="option"><input type="checkbox" value="G"> G) математикалық терминдерге ертегі</label>
+      <label class="option"><input type="checkbox" value="H"> H) жауапқа немесе өрнекке сәйкес келетін сұрақ</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Есеп мысалында оқушылар шарт пен жауапқа немесе шешім өрнегіне сәйкес келетін сұрақ құрастырады. Мақсат жауап пен қойылған сұрақтың сәйкестігі арқылы анықталады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E">
+    <h3>79. Сөздік теннис әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) топтық коллаж арқылы қасиет көрсету</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқылған материалды қайталау</label>
+      <label class="option"><input type="checkbox" value="C"> C) сұрақтарды ағашқа ілу</label>
+      <label class="option"><input type="checkbox" value="D"> D) төрт бұрышта таңдау жасау</label>
+      <label class="option"><input type="checkbox" value="E"> E) математикалық ұғымдар мен терминдерді еске түсіру</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушыларды жеребемен бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) есеп алгоритмін пирамидада құру</label>
+      <label class="option"><input type="checkbox" value="H"> H) автобус аялдамасында теңдеу құрастыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Сөздік теннис әдісі оқылған материалды қайталауға бағытталған. Математика сабағында ол математикалық терминдер мен ұғымдарды еске түсіру үшін қолданылады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>80. Сөздік теннис әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар жауапты ағаштан алады</label>
+      <label class="option"><input type="checkbox" value="B"> B) топтар флипчарттарды сағат тілімен ауыстырады</label>
+      <label class="option"><input type="checkbox" value="C"> C) оқушылар жұпта немесе үштікте жұмыс істейді</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар бұрыштарға қарай қозғалады</label>
+      <label class="option"><input type="checkbox" value="E"> E) карточкаларға тек жауаптар жазылады</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушы карточкадағы сөзге байланысты ассоциация немесе ұғым айтады</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылар есепті аялдамада шешеді</label>
+      <label class="option"><input type="checkbox" value="H"> H) қиналса, қайталаса немесе қате айтса, қарсыласы ұпай алады</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушылар жұпта немесе үштікте жұмыс істейді. Бір оқушы карточкадағы сөзді атайды, екіншісі соған байланысты ассоциация немесе математикалық ұғым айтуы керек.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,G">
+    <h3>81. Динамикалық жұптар әдісінің мақсаты мен ұйымдастырылуы</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) есептеу дағдыларын дамыту</label>
+      <label class="option"><input type="checkbox" value="B"> B) геометриялық фигураға ертегі құрастыру</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтарды мақал арқылы бөлу</label>
+      <label class="option"><input type="checkbox" value="D"> D) формативті бағалау жүргізу</label>
+      <label class="option"><input type="checkbox" value="E"> E) уақыт туралы дерек жинау</label>
+      <label class="option"><input type="checkbox" value="F"> F) пікірді «ақиқат» және «жалған» деп бөлу</label>
+      <label class="option"><input type="checkbox" value="G"> G) оқушылардың әртүрлі жұп құрып, сұрақ қоюы</label>
+      <label class="option"><input type="checkbox" value="H"> H) флипчарттағы жауаптарды ауыстыру</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Динамикалық жұптар әдісінің мақсаты — есептеу дағдыларын дамыту және формативті бағалау. Оқушылар әртүрлі жұп құрып, бір-біріне сұрақ қояды, дұрыс жауапты маршруттық парақта белгілейді.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,H">
+    <h3>82. Динамикалық жұптар әдісінің санның үлесін табу тақырыбындағы тапсырмалары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) 48 қой және 9 артық жылқы туралы сұрақ құрастыру</label>
+      <label class="option"><input type="checkbox" value="B"> B) 9 санының үштен бір бөлігін табу</label>
+      <label class="option"><input type="checkbox" value="C"> C) цилиндрді сұрақ арқылы табу</label>
+      <label class="option"><input type="checkbox" value="D"> D) квадраттың қабырғаларын сипаттау</label>
+      <label class="option"><input type="checkbox" value="E"> E) 10 санының жартысын табу</label>
+      <label class="option"><input type="checkbox" value="F"> F) төртбұрышты қабырға құрастыру арқылы сипаттау</label>
+      <label class="option"><input type="checkbox" value="G"> G) уақыт өлшемдері бойынша карточка таңдау</label>
+      <label class="option"><input type="checkbox" value="H"> H) 100 санының оннан бір бөлігін табу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Динамикалық жұптар әдісі санның үлесін табу тақырыбында беріледі: 9 санының үштен бір бөлігі — 3, 10 санының жартысы — 5, 100 санының оннан бір бөлігі — 10.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-6"></div>
+  <button onclick="checkSection('section-6','result-section-6')">Нәтижені көрсету</button>
+</section>
+  <section class="section" id="section-7">
+  <span class="tag">7-бөлім</span>
+  <h2>Жұптық жұмыс: өзара сұрау және иә-жоқ әдісі</h2>
+  <p class="intro">
+    Бұл бөлімде жұпта оқушылардың бір-біріне сұрақ қоюы, тақырып бойынша сұрақ құрастыруы,
+    геометриялық фигураны сұрақ арқылы анықтауы және жауапты тек «иә», «жоқ»,
+    «маңызы жоқ» түрінде беруі қарастырылады.
+  </p>
+
+  <div class="question" data-answer="A,D,H">
+    <h3>83. Өзара сұрау әдісінің мақсатына сәйкес келетін тұжырымдар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқылған материалды бекіту</label>
+      <label class="option"><input type="checkbox" value="B"> B) топтарды геометриялық фигуралармен бөлу</label>
+      <label class="option"><input type="checkbox" value="C"> C) флипчарттарды сағат тілімен ауыстыру</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқылған материалды қайталау</label>
+      <label class="option"><input type="checkbox" value="E"> E) плакаттағы сөздерді есте сақтау</label>
+      <label class="option"><input type="checkbox" value="F"> F) карточкаларды домино түрінде жалғау</label>
+      <label class="option"><input type="checkbox" value="G"> G) жауапты ағаш жапырағынан алу</label>
+      <label class="option"><input type="checkbox" value="H"> H) сұрақ қою білігін дамыту</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Өзара сұрау әдісінің мақсаты — оқылған материалды бекіту, қайталау, сұрау жүргізу және оқушылардың сұрақ қою білігін дамыту.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,E,G">
+    <h3>84. Өзара сұрау әдісінің орындалу тәртібі</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) оқушылар дайын жауапты ғана көшіреді</label>
+      <label class="option"><input type="checkbox" value="B"> B) оқушылар мұғалім көрсеткен тақырып бойынша сұрақ құрастырады</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтар аялдамалар бойынша ауысады</label>
+      <label class="option"><input type="checkbox" value="D"> D) оқушылар тек түсті қағаздың астында тұрады</label>
+      <label class="option"><input type="checkbox" value="E"> E) оқушылар жұпта бір-бірінен сұрайды</label>
+      <label class="option"><input type="checkbox" value="F"> F) оқушылар постердегі терминдерді есте сақтайды</label>
+      <label class="option"><input type="checkbox" value="G"> G) жұмыс соңында рефлексия жүргізіледі</label>
+      <label class="option"><input type="checkbox" value="H"> H) оқушылар карточканың оң және сол бөлігін жалғайды</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Әдісте оқушылар мұғалім көрсеткен тақырып бойынша сұрақтар құрастырады, жұпта бір-бірінен сұрайды және соңында рефлексия жасайды.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F,H">
+    <h3>85. Өзара сұрау әдісінің сандық және әріптік өрнектер тақырыбындағы сұрақтары</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) Шеңбердің радиусы қалай табылады?</label>
+      <label class="option"><input type="checkbox" value="B"> B) Туған күнің қай мезгілде?</label>
+      <label class="option"><input type="checkbox" value="C"> C) Сандық өрнек дегеніміз не?</label>
+      <label class="option"><input type="checkbox" value="D"> D) Қандай сағат түрлерін білесің?</label>
+      <label class="option"><input type="checkbox" value="E"> E) Қай валюта Азия елдерінде кездеседі?</label>
+      <label class="option"><input type="checkbox" value="F"> F) Әріптік өрнек дегеніміз не?</label>
+      <label class="option"><input type="checkbox" value="G"> G) Тікбұрышты үшбұрыш квадратқа ұқсай ма?</label>
+      <label class="option"><input type="checkbox" value="H"> H) Теңдік дегеніміз не?</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда сандық және әріптік өрнектер тақырыбы бойынша «Сандық өрнек дегеніміз не?», «Әріптік өрнек дегеніміз не?», «Теңдік дегеніміз не?», «Теңсіздік дегеніміз не?» сияқты сұрақтар берілген.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,E">
+    <h3>86. Өзара сұрау әдісінде оқушылар құрастыратын тапсырмаларға сәйкес мысалдар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) қосындының әріптік өрнегін құрастыр</label>
+      <label class="option"><input type="checkbox" value="B"> B) туған күні жазда болатын үш оқушыны тап</label>
+      <label class="option"><input type="checkbox" value="C"> C) бөлшек өрнектерін плакаттан есте сақта</label>
+      <label class="option"><input type="checkbox" value="D"> D) квадратты арқа тіреп отырып сипатта</label>
+      <label class="option"><input type="checkbox" value="E"> E) айырманың әріптік өрнегін құрастыр</label>
+      <label class="option"><input type="checkbox" value="F"> F) теңдеулерді аялдамада алмастырып шеш</label>
+      <label class="option"><input type="checkbox" value="G"> G) бұрыш туралы ертегі құрастыр</label>
+      <label class="option"><input type="checkbox" value="H"> H) шеңбердің қабырғаларын ата</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Сандық және әріптік өрнектер тақырыбындағы мысалда оқушылар қосындының әріптік өрнегін және айырманың әріптік өрнегін құрастыру сияқты сұрақтар қоя алады.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B,D,H">
+    <h3>87. Иә-жоқ әдісінің мақсаты</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) дайын жауаптарды жаттау</label>
+      <label class="option"><input type="checkbox" value="B"> B) сұрақ құрастыру білігін дамыту</label>
+      <label class="option"><input type="checkbox" value="C"> C) топтарды журнал бойынша бөлу</label>
+      <label class="option"><input type="checkbox" value="D"> D) нақтылау сұрақтарын қою дағдысын дамыту</label>
+      <label class="option"><input type="checkbox" value="E"> E) плакаттағы сөздерді көшіру</label>
+      <label class="option"><input type="checkbox" value="F"> F) тек мұғалімнің түсіндіруін тыңдау</label>
+      <label class="option"><input type="checkbox" value="G"> G) карточкаларды сол және оң бөлікке бөлу</label>
+      <label class="option"><input type="checkbox" value="H"> H) жасырылған нысанды сұрақ арқылы табу</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Иә-жоқ әдісінде бір ойыншы нысанды жасырады, ал басқалары нақтылау сұрақтарын қою арқылы оның не екенін табады. Жауап тек «иә», «жоқ» немесе «маңызы жоқ» болуы мүмкін.
+    </div>
+  </div>
+
+  <div class="question" data-answer="C,F">
+    <h3>88. Иә-жоқ әдісіндегі жауап түрлері</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) толық түсіндірме жауап</label>
+      <label class="option"><input type="checkbox" value="B"> B) ұзақ дәлелді сөйлем</label>
+      <label class="option"><input type="checkbox" value="C"> C) иә</label>
+      <label class="option"><input type="checkbox" value="D"> D) есептің толық шешімі</label>
+      <label class="option"><input type="checkbox" value="E"> E) формула және қорытынды</label>
+      <label class="option"><input type="checkbox" value="F"> F) жоқ</label>
+      <label class="option"><input type="checkbox" value="G"> G) үш түрлі түсініктеме</label>
+      <label class="option"><input type="checkbox" value="H"> H) дайын анықтама</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Бұл әдісте сұрақтарға жауап ретінде тек «иә», «жоқ» және қажет жағдайда «маңызы жоқ» деген жауаптар беріледі.
+    </div>
+  </div>
+
+  <div class="question" data-answer="A,D,G">
+    <h3>89. Иә-жоқ әдісінің геометриялық фигураны табу мысалындағы сұрақтар</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) Бұл жазық фигура ма?</label>
+      <label class="option"><input type="checkbox" value="B"> B) Бұл сандық өрнек пе?</label>
+      <label class="option"><input type="checkbox" value="C"> C) Бұл уақыт бірлігі ме?</label>
+      <label class="option"><input type="checkbox" value="D"> D) Бұл кеңістіктік фигура ма?</label>
+      <label class="option"><input type="checkbox" value="E"> E) Бұл әріптік өрнек пе?</label>
+      <label class="option"><input type="checkbox" value="F"> F) Бұл теңсіздік пе?</label>
+      <label class="option"><input type="checkbox" value="G"> G) Оның табаны шеңбер ме?</label>
+      <label class="option"><input type="checkbox" value="H"> H) Бұл қосындының мәні ме?</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Мысалда оқушылар жасырылған геометриялық фигураны табу үшін «Бұл жазық фигура ма?», «Бұл кеңістіктік фигура ма?», «Оның табаны шеңбер ме?» сияқты нақтылау сұрақтарын қояды.
+    </div>
+  </div>
+
+  <div class="question" data-answer="B">
+    <h3>90. Иә-жоқ әдісіндегі геометриялық фигураны табу мысалында соңғы дұрыс жауап қандай?</h3>
+    <div class="options">
+      <label class="option"><input type="checkbox" value="A"> A) шар</label>
+      <label class="option"><input type="checkbox" value="B"> B) цилиндр</label>
+      <label class="option"><input type="checkbox" value="C"> C) конус</label>
+      <label class="option"><input type="checkbox" value="D"> D) куб</label>
+      <label class="option"><input type="checkbox" value="E"> E) пирамида</label>
+      <label class="option"><input type="checkbox" value="F"> F) призма</label>
+      <label class="option"><input type="checkbox" value="G"> G) тік төртбұрыш</label>
+      <label class="option"><input type="checkbox" value="H"> H) үшбұрыш</label>
+    </div>
+    <div class="explanation">
+      <b>Түсіндірме:</b> Сұрақ-жауап тізбегінде фигура жазық емес, кеңістіктік, граны жоқ, табаны шеңбер, түтікке ұқсайды деп сипатталады. Соңында дұрыс жауап — цилиндр.
+    </div>
+  </div>
+
+  <div class="result" id="result-section-7"></div>
+  <button onclick="checkSection('section-7','result-section-7')">Нәтижені көрсету</button>
+</section>
+
+</main>
+
+<footer>
+  © @elnazm_ln
+</footer>
+
+</body>
+</html>
